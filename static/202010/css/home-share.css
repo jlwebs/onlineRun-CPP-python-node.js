@@ -1,0 +1,21 @@
+/*编译工具共同样式*/
+#aceEditorContain{
+   margin: 0;
+    width: 100%;
+}
+
+.share-edt-tit{
+    padding: 0;
+    margin: 0;
+}
+
+@media screen and (min-width: 1200px){
+    .container{
+        max-width: 1200px;
+    }
+}
+@media screen and (min-width: 1200px){
+    .container{
+        width: 1200px;
+    }
+}

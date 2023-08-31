@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>在线运行JavaScript</title>
+    <meta content="JavaScript在线运行代码，JavaScript在线代码编译运行，JavaScript在线代码编辑器，JavaScript在线代码编译，JavaScript在线调试，JavaScript在线代码执行系统" name="keywords" />
+    <meta content="这是一个简单方便的JavaScript在线运行工具，支持在线编译、在线调试和在线结果的实时反馈。" name="description" />
+    <link href="/static/202010/css/chosen.min.css" rel="stylesheet">
+    <link href="/static/202010/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/kj/css/home-1589270335000.css" rel="stylesheet">
+    <link href="/static/kj/css/run-1589270335000.css" rel="stylesheet">
+    <link href="/static/kj/css/public.css" rel="stylesheet">
+    <link href="/static/kj/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/static/202010/css/base.css" rel="stylesheet">
+    <link href="/static/202010/css/new-style.css" rel="stylesheet">
+    <link href="/static/202010/css/new-style2.css" rel="stylesheet">
+    <link href="/static/202010/css/home-share.css" rel="stylesheet">
+    <link href="/static/202010/css/header.css" rel="stylesheet">
+</head>
+
+
+<style>
+    .checkbox-primary > label:before, .radio-primary > label:before{
+        top: 8px;
+    }
+    .checkbox-primary > label:after, .radio-primary > label:after{
+        top: 7px;
+    }
+    @media screen and (max-width: 767px) {
+        #aceEditorContain .ace-box{
+            height: 100%;
+        }
+    }
+</style>
+<body class="bg-color-f7">
+
+<style>
+    .myNotice{
+        display: inline-block;
+    }
+    .hasNotice{
+        position: relative;
+    }
+    .myNotice.hasNotice:after{
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 8px;
+        background-color: red;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    a.hasNotice:after{
+        left: 10px;
+        top: 50% !important;
+        margin-top: -4px;
+    }
+</style>
+
+
+<div class="clear-both t-big-margin new-ace-editor-contain" id="aceEditorContain" >
+    <div class="ace-box flex justify-between" style="width: 100%">
+        <div class="flex-1" >
+            <div style="padding: 10px;background-color: #ffffff;">
+                <div class="bygj-param-chose">
+                    <span>选择语言：</span>
+                    <select class="" id="aceEditorTypeList" onchange="goto_surl()"  data-maxwidth="180">
+                        <option value="ace/mode/c_cpp" lid="54" url="/runcode/run_cpp920/">C++ (GCC 9.2.0)</option>
+                        
+                        <option value="ace/mode/javascript" lid="63" url="/runcode/run_javascript/">JavaScript (Node.js 12.14.0)</option>
+                        
+                        <option value="ace/mode/python3" lid="71" url="/runcode/run_python3/">Python (3.8.1)</option>
+                        
+                    </select>
+                </div>
+                <div class="bygj-origi-code">
+                    <button type="button" class="btn float-left btn-default " id="runCodeSource"><span class="l-mini-margin">源代码</span></button>
+                </div>
+            </div>
+            <div id="aceEditor"></div>
+        </div>
+        <div class="flex-1">
+            <div class="ace-title-box clear-both bygj-param-val" style="width: 100%;height: 100%;background-color: #ffffff">
+                <div class="ace-title-box-top">
+                    <div class="">
+                        <div class="checkbox-primary display-i-block r-big-margin" id="autoCheck"><input type="checkbox" id="autoRun" ><label for="autoRun" class="no-margin-b">自动运行</label></div>
+                        <button type="button" class="btn btn-default" id="cancelFullScreen"><i class="icon-collapse-full"></i><span class="l-mini-margin">关闭</span></button>
+                        <button type="button" class="btn r-big-margin btn-default zxyx-fullScreen-btn" id="fullScreen"><i class="icon-expand-full"></i><span class="l-mini-margin">全屏</span></button>
+
+                        <button type="button" class="btn btn-primary zxyx-runCode-btn" id="runCode"><i class="fa fa-play-circle-o"></i><span class="l-mini-margin">运行</span></button>
+                    </div>
+                    <div class="bygj-param-more">
+                        命令行参数：<input class="w1-more-1" type="text" id="command_line_arguments" />
+                    </div>
+                    <div class="bygj-param-more">
+                        标准输入：
+                        <textarea class="w1-more-2" id="stdin"></textarea>
+                    </div>
+
+                    <script>
+                        var a_opt=document.getElementById('aceEditorTypeList').getElementsByTagName("option");
+                        for(i=0;i<a_opt.length;i++)
+                        {
+                            if(a_opt[i].getAttribute('url').replace("/runcode/","").replace("/","").split("?")[0]=='run_javascript')
+                            {
+                                a_opt[i].selected=true;
+                            }
+                        }
+
+                        function goto_surl() {
+                            window.location.href=$('#aceEditorTypeList').find('option:selected').attr('url');
+                        }
+
+                    </script>
+
+
+                </div>
+                运行结果：
+                <div class="code-result" style="width: 100%;height: auto">
+                    <!--        <div class="ace-title-box">-->
+                    <!--            <button type="button" class="btn btn-default"><span class="l-mini-margin">运行结果：</span></button>-->
+                    <!--        </div>-->
+                    <div class="code-result-mask"></div>
+                    <iframe id="resultPreview" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    <div class="aceEditorItem-xscale float-none"></div>-->
+</div>
+
+
+
+
+<textarea id="textCode" style="display: none"></textarea>
+
+
+<script type="text/javascript" src="/static/kj/js/run-1594373492000-bundle.js"></script>
+<script type="text/javascript" src="/static/kj/ace/jquery-3.4.1.min.js"></script>
+<script src="/static/kj/plus/layer/layer.js" type="text/javascript"></script>
+<script src="/static/kj/ace/zui.js"></script>
+<script src="/static/kj/ace/ace.js"></script>
+<script src="/static/kj/ace/ext-language_tools.js"></script>
+<script type="text/javascript" src="/static/202010/js/jquery.cookie.js"></script>
+<script src="/static/202010/js/bootstrap.min.js"></script>
+<script src="/static/202010/js/new-common.js"></script>
+<script src="/static/202010/js/template.js"></script>
+<script>
+    var language_id=$("#aceEditorTypeList").find(":selected").attr('lid');
+    var ace_mode=$("#aceEditorTypeList").find(":selected").attr('value');
+    var language_type =  "javascript";
+    //获取屏幕高度，设置编辑器高度
+    var windowHeight = $(window).innerHeight();
+    $('#aceEditorContain').height(windowHeight - 230);
+
+    //设置运行结果高度
+    var topElH = $('.ace-title-box-top').height()
+    // $('#resultPreview').height($('.ace-title-box-top').parent().height()  - topElH - 20)
+    $('#resultPreview').height($('.ace-title-box-top').parent().height()  - topElH -40)
+
+    var aceEditor = ace.edit('aceEditor');
+
+    aceEditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true,
+        fontSize: 14,
+        showPrintMargin: false
+    });
+    aceEditor.getSession().setMode(ace_mode);
+
+    //初始化编辑器主题
+    var theme = localStorage.getItem('theme');
+    if (theme === 'night') {
+        aceEditor.setTheme('ace/theme/monokai');
+    } else {
+        aceEditor.setTheme('ace/theme/github');
+    }
+
+    //初始化编辑器内容
+    var req_tag =window.location.href.split("=")[1] || false;
+    if(req_tag) {
+        var demo_code_url = "/api/cms/frontend/get_try_code?tag=" + req_tag + "&type=" + language_type;
+        $.get(demo_code_url, function (data) {
+                if (data['code'] == 0) {
+                    aceEditor.insert(data['content']);
+                }
+            }
+            , 'json');
+    } else {
+        aceEditor.insert(insertTemplate())
+    }
+
+    //
+
+    $('#runCode').click(function () {
+        if(aceEditor.getValue()=="")
+        {
+            layer.msg('代码不能为空');
+            return;
+        }
+        $.post('//api.json.cn/try_run?action=get_token',{source_code:aceEditor.getValue(),language_id:language_id,command_line_arguments:$('#command_line_arguments').val(),stdin:$('#stdin').val()},function (data) {
+
+            if(typeof data.token=="undefined")
+            {
+                layer.alert('未知错误');
+            }
+            else
+            {
+                token=data.token;
+                layer_load=layer.load();
+                get_result(token);
+            }
+
+
+
+        },'json');
+
+        /*
+        $.post('http://api.kjson.com/submissions',{source_code:aceEditor.getValue(),aceEditorTypeList:50},function (data) {
+            var token=data.token;
+            $.get('http://api.kjson.com/submissions/'+token,function (data) {
+                console.log(data);
+            },'json');
+        },'json');
+        */
+    });
+
+    function get_result() {
+        $.get("//api.json.cn/try_run?action=get_result&token="+token,function (data) {
+
+            console.log(data.status);
+            console.log(data.status.description);
+
+
+            try{
+                if(typeof data.status !="undefined" && typeof data.status.description !="undefined" && data.status.description=='Accepted')
+                {
+                    var html="";
+                    if (data.stderr!=null)
+                        html+="<h3>标准错误：</h3><pre>"+(Base64.decode(data.stderr)+"")+"</pre>";
+                    if (data.stdout!=null)
+                        html+="<h3>标准输出：</h3><pre>"+(Base64.decode(data.stdout)+"")+"</pre>";
+                    $iframeDoc['write'](html);
+                    $iframeDoc['close']();
+                    layer.close(layer_load);
+                }
+                else if(typeof data.status !="undefined" && typeof data.status.description !="undefined" && data.status.description=='Compilation Error')
+                {
+                    var html="";
+                    if (data.compile_output!=null)
+                    {
+                        var compile_output=Base64.decode(data.compile_output);
+                        html+="<h3>编译错误：</h3><pre>"+(compile_output+"")+"</pre>";
+                    }
+                    $iframeDoc['write'](html);
+                    $iframeDoc['close']();
+                    layer.close(layer_load);
+                }
+                else if(typeof data.status !="undefined" && typeof data.status.description !="undefined" && data.status.description.indexOf('Runtime Error')>-1)
+                {
+                    var html="";
+                    if (data.status.description!=null)
+                    {
+                        var compile_output=(data.status.description);
+                        var std_output=Base64.decode(data.stderr);
+                        html+="<h3>编译错误：</h3><pre>"+(compile_output+"")+"</pre>";
+                        html+="<h3>执行错误：</h3><pre>"+(std_output+"")+"</pre>";
+                    }
+                    $iframeDoc['write'](html);
+                    $iframeDoc['close']();
+                    layer.close(layer_load);
+                }
+                else if(typeof data.status !="undefined" && typeof data.status.description !="undefined" && data.status.description.indexOf('Time Limit Exceeded')>-1)
+                {
+                    var html="";
+                    if (data.status.description!=null)
+                    {
+                        var compile_output=(data.status.description);
+                        html+="<h3>编译错误：</h3><pre>"+(compile_output+"")+"</pre>";
+                        html+="<h3>执行错误：</h3><pre>运行超时</pre>";
+                    }
+                    $iframeDoc['write'](html);
+                    $iframeDoc['close']();
+                    layer.close(layer_load);
+                }
+                else if(typeof data.error!="undefined")
+                {
+                    var html="无法执行编译操作，请检查错误。";
+                    $iframeDoc['write'](html);
+                    $iframeDoc['close']();
+                    layer.close(layer_load);
+                }
+                else
+                {
+                    window.setTimeout(get_result,1000)
+                }
+            }
+            catch (e)
+            {
+                console.log(e);
+                window.setTimeout(get_result,1000)
+            }
+        },'json');
+    }
+
+    var $iframeDoc = document.getElementById("resultPreview").contentWindow.document;
+
+    var Base64 = {
+        _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+        encode: function(e) {
+            var t = "";
+            var n, r, i, s, o, u, a;
+            var f = 0;
+            e = Base64._utf8_encode(e);
+            while (f < e.length) {
+                n = e.charCodeAt(f++);
+                r = e.charCodeAt(f++);
+                i = e.charCodeAt(f++);
+                s = n >> 2;
+                o = (n & 3) << 4 | r >> 4;
+                u = (r & 15) << 2 | i >> 6;
+                a = i & 63;
+                if (isNaN(r)) {
+                    u = a = 64
+                } else if (isNaN(i)) {
+                    a = 64
+                }
+                t = t + this._keyStr.charAt(s) + this._keyStr.charAt(o) + this._keyStr.charAt(u) + this._keyStr.charAt(a)
+            }
+            return t
+        },
+        decode: function(e) {
+            var t = "";
+            var n, r, i;
+            var s, o, u, a;
+            var f = 0;
+            e = e.replace(/[^A-Za-z0-9+/=]/g, "");
+            while (f < e.length) {
+                s = this._keyStr.indexOf(e.charAt(f++));
+                o = this._keyStr.indexOf(e.charAt(f++));
+                u = this._keyStr.indexOf(e.charAt(f++));
+                a = this._keyStr.indexOf(e.charAt(f++));
+                n = s << 2 | o >> 4;
+                r = (o & 15) << 4 | u >> 2;
+                i = (u & 3) << 6 | a;
+                t = t + String.fromCharCode(n);
+                if (u != 64) {
+                    t = t + String.fromCharCode(r)
+                }
+                if (a != 64) {
+                    t = t + String.fromCharCode(i)
+                }
+            }
+            t = Base64._utf8_decode(t);
+            return t
+        },
+        _utf8_encode: function(e) {
+            e = e.replace(/rn/g, "n");
+            var t = "";
+            for (var n = 0; n < e.length; n++) {
+                var r = e.charCodeAt(n);
+                if (r < 128) {
+                    t += String.fromCharCode(r)
+                } else if (r > 127 && r < 2048) {
+                    t += String.fromCharCode(r >> 6 | 192);
+                    t += String.fromCharCode(r & 63 | 128)
+                } else {
+                    t += String.fromCharCode(r >> 12 | 224);
+                    t += String.fromCharCode(r >> 6 & 63 | 128);
+                    t += String.fromCharCode(r & 63 | 128)
+                }
+            }
+            return t
+        },
+        _utf8_decode: function(e) {
+            var t = "";
+            var n = 0;
+            var r = c1 = c2 = 0;
+            while (n < e.length) {
+                r = e.charCodeAt(n);
+                if (r < 128) {
+                    t += String.fromCharCode(r);
+                    n++
+                } else if (r > 191 && r < 224) {
+                    c2 = e.charCodeAt(n + 1);
+                    t += String.fromCharCode((r & 31) << 6 | c2 & 63);
+                    n += 2
+                } else {
+                    c2 = e.charCodeAt(n + 1);
+                    c3 = e.charCodeAt(n + 2);
+                    t += String.fromCharCode((r & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
+                    n += 3
+                }
+            }
+            return t
+        }
+    };
+
+    //修改编辑器主题
+    $('body').on('click','#switchTheme',function () {
+        if ($(this).attr('data-theme') === 'day') {
+            aceEditor.setTheme('ace/theme/github');
+        } else {
+            aceEditor.setTheme('ace/theme/monokai');
+        }
+    });
+
+    //还原代码
+    // $('#runCodeSource').click(function(){
+    //     aceEditor.setValue('');
+    // });
+    document.getElementById('runCodeSource').onclick = function(){
+        aceEditor.setValue(htmlspecialchars_decode($("#textCode").val()));
+        //runcode
+        if(aceEditor.getValue()=="")
+        {
+            layer.msg('代码不能为空');
+            return;
+        }
+        $.post('//api.json.cn/try_run?action=get_token',{source_code:aceEditor.getValue(),language_id:language_id,command_line_arguments:$('#command_line_arguments').val(),stdin:$('#stdin').val()},function (data) {
+
+            if(typeof data.token=="undefined")
+            {
+                layer.alert('未知错误');
+            }
+            else
+            {
+                token=data.token;
+                layer_load=layer.load();
+                get_result(token);
+            }
+
+        },'json');
+
+    };
+
+    //自动运行
+    var watchTimer;
+    aceEditor.getSession().on('change', ()=>{
+        var isChecked = $('#autoRun').prop('checked');
+        // alert(isChecked)
+        if (isChecked) {
+            watchTimer && clearTimeout(watchTimer);
+            watchTimer = setTimeout(function() {
+                // codeRun()
+                if(aceEditor.getValue()=="")
+                {
+                    layer.msg('代码不能为空');
+                    return;
+                }
+                $.post('//api.json.cn/try_run?action=get_token',{source_code:aceEditor.getValue(),language_id:language_id,command_line_arguments:$('#command_line_arguments').val(),stdin:$('#stdin').val()},function (data) {
+
+                    if(typeof data.token=="undefined")
+                    {
+                        layer.alert('未知错误');
+                    }
+                    else
+                    {
+                        token=data.token;
+                        layer_load=layer.load();
+                        get_result(token);
+                    }
+
+                },'json');
+            }, 600)
+        }
+    });
+
+    // 拖动增加和缩减编辑器的高度
+    function resizeCodemirror() {
+        var totalHeight = $('.ace-box').innerHeight();
+        var totalWidth = $('#aceEditorContain').outerWidth();
+        $('.aceEditorItem-xscale').draggable({
+            container: '#aceEditorContain',
+            move: false,
+            before: function () {
+                $('.code-result-mask').show();
+            },
+            drag: function (e) {
+                if (e.pos.left > totalWidth - 380 || e.pos.left < 380) {
+                    return
+                }
+                $('.aceEditorItem-xscale').css('left', e.pos.left);
+                $('.ace-box').width(e.pos.left);
+                $('.code-result').width(totalWidth - e.pos.left - 10);
+            },
+            finish: function (e) {
+                $('.code-result-mask').hide();
+                aceEditor.resize();
+            }
+        });
+    }
+    resizeCodemirror();
+
+    //全屏
+    $('#fullScreen').click(function(){
+        // $('.ace-box').css('width', '');
+        // $('.code-result').css('width', '');
+        // $('.aceEditorItem-xscale').css('left', '');
+        // $('.aceEditorItem-xscale').css('height', '');
+
+
+        //销毁draggable
+        $('.aceEditorItem-xscale').draggable('destroy');
+        //重新初始化基本样式
+        $('#aceEditorContain').addClass('full-ace-editor-box');
+        //初始化关闭按钮
+        $('#cancelFullScreen').show();
+        $('#fullScreen').hide();
+        resizeCodemirror();
+        aceEditor.resize();
+        $('.code-result').height()
+    });
+
+    //关闭全屏
+    $('#cancelFullScreen').click(function(){
+        // $('.ace-box').css('width', '');
+        // $('.code-result').css('width', '');
+        // $('.aceEditorItem-xscale').css('left', '');
+        // $('.aceEditorItem-xscale').css('height', '');
+
+        // $('.code-result').removeClass('full-screen-b')
+
+
+
+        //销毁draggable
+        $('.aceEditorItem-xscale').draggable('destroy');
+        //重新初始化基本样式
+        $('#aceEditorContain').removeClass('full-ace-editor-box');
+
+        resizeCodemirror();
+        aceEditor.resize();
+
+        //初始化关闭按钮
+        $('#cancelFullScreen').hide();
+        $('#fullScreen').show();
+
+    });
+
+
+    function resizeResoultH(el) {
+        var elH =  $(el).closest('.ace-title-box').height() - $(el).parent().prev().height() - 20
+
+    }
+
+</script><!-- 底部 -->
+<script data-ad-client="ca-pub-0888257628527075" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+
+<script src="/static/202010/js/lang.js"></script>
+<script src="/static/202010/js/login.js"></script>
+<script src="/static/202010/js/footer.js"></script>
+<style>
+    .popup-link-info-box {
+        position: absolute;
+        right: 58px;
+        top: 0;
+        background-color: #fff;
+        -webkit-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        display: none;
+    }
+
+    .popup-link-info-box li {
+        float: left;
+        margin-right: 10px;
+        border: 1px solid #eee;
+        text-align: center;
+        line-height: 50px;
+    }
+
+    .popup-link-info-box li p {
+        font-size: 14px;
+        color: #333;
+    }
+
+    .popup-link-info-box li p span {
+        font-size: 14px;
+        color: #333;
+    }
+
+    .popup-link-info-box li .popup-wechat-wrapper {}
+
+    .popup-link-info-box li .popup-wechat-wrapper img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+</style>
+
+</body>
+</html>
