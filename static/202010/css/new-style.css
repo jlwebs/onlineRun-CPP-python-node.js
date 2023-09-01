@@ -871,7 +871,7 @@ button{
 .bygj-param-chose select{
     display: inline-block;
     vertical-align: top;
-    width: calc(100% - 80px);
+    width: calc(100% - 20px);
     background-color: transparent;
     height: 30px;
     border: none;

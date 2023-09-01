@@ -67,7 +67,7 @@
         <div class="flex-1" >
             <div style="padding: 10px;background-color: #ffffff;">
                 <div class="bygj-param-chose">
-                    <span>选择语言：</span>
+                    <span></span>
                     <select class="" id="aceEditorTypeList" onchange="goto_surl()"  data-maxwidth="180">
                         <option value="ace/mode/c_cpp" lid="54" url="/runcode/run_cpp920/">C++ (GCC 9.2.0)</option>
                         
@@ -93,13 +93,7 @@
 
                         <button type="button" class="btn btn-primary zxyx-runCode-btn" id="runCode"><i class="fa fa-play-circle-o"></i><span class="l-mini-margin">运行</span></button>
                     </div>
-                    <div class="bygj-param-more">
-                        命令行参数：<input class="w1-more-1" type="text" id="command_line_arguments" />
-                    </div>
-                    <div class="bygj-param-more">
-                        标准输入：
-                        <textarea class="w1-more-2" id="stdin"></textarea>
-                    </div>
+
 
                     <script>
                         var a_opt=document.getElementById('aceEditorTypeList').getElementsByTagName("option");
@@ -120,12 +114,16 @@
 
                 </div>
                 运行结果：
-                <div class="code-result" style="width: 100%;height: auto">
+                <div class="code-result" style="width: 100%;height: auto;height: 200px;">
                     <!--        <div class="ace-title-box">-->
                     <!--            <button type="button" class="btn btn-default"><span class="l-mini-margin">运行结果：</span></button>-->
                     <!--        </div>-->
                     <div class="code-result-mask"></div>
-                    <iframe id="resultPreview" frameborder="0"></iframe>
+                    <iframe id="resultPreview" frameborder="0" style="height: 200px;"></iframe>
+                </div>
+                <div class="bygj-param-more"><input class="w1-more-1" type="text" id="command_line_arguments" placeholder="命令行参数">
+                </div>
+                <div class="bygj-param-more"><textarea class="w1-more-2" id="stdin" style="height: 100px;" placeholder="标准输入"  ></textarea>
                 </div>
             </div>
         </div>
@@ -160,7 +158,7 @@
     //设置运行结果高度
     var topElH = $('.ace-title-box-top').height()
     // $('#resultPreview').height($('.ace-title-box-top').parent().height()  - topElH - 20)
-    $('#resultPreview').height($('.ace-title-box-top').parent().height()  - topElH -40)
+    // $('#resultPreview').height($('.ace-title-box-top').parent().height()  - topElH -40)
 
     var aceEditor = ace.edit('aceEditor');
 
@@ -549,7 +547,6 @@
     }
 
 </script><!-- 底部 -->
-<script data-ad-client="ca-pub-0888257628527075" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 
 <script src="/static/202010/js/lang.js"></script>
